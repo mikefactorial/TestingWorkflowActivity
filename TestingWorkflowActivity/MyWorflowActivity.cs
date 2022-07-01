@@ -39,9 +39,14 @@ namespace TestingWorkflowActivity
             //I can call this method from a console application and just supply the parameters it expects and run it locally.
             //You'd move all of your logic out of the Execute above and put it here. Here I'm retrieving contacts associated with the account as an example 
             QueryExpression q = new QueryExpression("contact");
+            q.ColumnSet = new ColumnSet(true);
             FilterExpression f = new FilterExpression();
             f.AddCondition("parentcustomerid", ConditionOperator.Equal, account["accountid"]);
             q.Criteria = f;
+
+            int test = account.GetAttributeValue<int?>("numberofemployees") ?? 0;
+            tracer.Trace("Account {0} has {1} employees", account.GetAttributeValue<string>("name"), test);
+
             var contactsForAccount = organizationService.RetrieveMultiple(q);
 
             tracer.Trace("Retrieved {0} contact(s) for account {1}", contactsForAccount.Entities.Count, account.GetAttributeValue<string>("name"));
